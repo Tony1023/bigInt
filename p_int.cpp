@@ -42,10 +42,11 @@ int P_Int::length() const {
 bool P_Int::operator>=(const P_Int &rhs) const {
 	if (size() > rhs.size()) return true;
 	else if (size() < rhs.size()) return false;
-	for (int i = size()-1; i >= 0; --i) {
-		if (at(i) < rhs.at(i))
+	size_t len = size();
+	for (size_t i = 0; i < len; ++i) {
+		if (at(len - i - 1) < rhs.at(len - i - 1))
 			return false;
-		else if (at(i) > rhs.at(i))
+		else if (at(i) > rhs.at(len - i - 1))
 			return true;
 	}
 	return true;
@@ -53,11 +54,12 @@ bool P_Int::operator>=(const P_Int &rhs) const {
 
 bool P_Int::operator<=(const P_Int &rhs) const {
 	if (size() < rhs.size()) return true;
-	else if (size() > rhs.size()) return false;
-	for (int i = size()-1; i >= 0; --i) {
-		if (at(i) > rhs.at(i))
+	else if (size() > rhs.size()) return false;	
+	size_t len = size();
+	for (size_t i = 0; i < len; ++i) {
+		if (at(len - i - 1) > rhs.at(len - i - 1))
 			return false;
-		else if (at(i) < rhs.at(i))
+		else if (at(i) < rhs.at(len - i - 1))
 			return true;
 	}
 	return true;
@@ -69,8 +71,9 @@ bool P_Int::operator<(const P_Int &rhs) const { return !operator>=(rhs); }
 
 bool P_Int::operator==(const P_Int &rhs) const {
 	if (size() != rhs.size()) return false;
-	for (int i = size()-1; i >= 0; --i) {
-		if (at(i) != rhs.at(i))
+	size_t len = size();
+	for (size_t i = 0; i < len; ++i) {
+		if (at(len - i - 1) != rhs.at(len - i - 1))
 			return false;
 	}
 	return true;
@@ -96,7 +99,7 @@ bool operator!=(unsigned int lhs, const P_Int &rhs) { return rhs != lhs; }
 
 P_Int P_Int::operator+(const P_Int &rhs) const {
 	P_Int result;
-	int i;
+	size_t i;
 	for (i = 0; i < size() && i < rhs.size(); ++i) 
 		result.push_back(at(i) + rhs.at(i));
 	while (i < size())
@@ -111,12 +114,12 @@ P_Int P_Int::operator-(const P_Int &rhs) const {
 	if (this->operator<(rhs)) 
 		throw NegativeExcept();
 	P_Int result;
-	int i;
+	size_t i;
 	for (i = 0; i < size() && i < rhs.size(); ++i)
 		result.push_back(at(i) - rhs.at(i));
 	while (i < size())
 		result.push_back(at(i++));
-	for (int j = 0; j < result.size(); ++j) {
+	for (size_t j = 0; j < result.size(); ++j) {
 		if (result.at(j) < 0) {
 			result.at(j) += 10;
 			--result.at(j + 1);
@@ -129,7 +132,7 @@ P_Int P_Int::operator-(const P_Int &rhs) const {
 P_Int P_Int::operator*(const P_Int &rhs) const {
 	P_Int result;
 	result.resize(size() + rhs.size(), 0);
-	for (int i = 0; i < size(); ++i) {
+	for (size_t i = 0; i < size(); ++i) {
 		P_Int tmp(rhs);
 		tmp.multiply_(at(i), i);
 		result += tmp;
@@ -146,11 +149,15 @@ P_Int operator+(unsigned int lhs, const P_Int &rhs) {
 	return result;
 }
 
-P_Int operator-(unsigned int, const P_Int&);
+P_Int operator-(unsigned int lhs, const P_Int &rhs) {
+	P_Int result(lhs);
+	result -= rhs;
+	return result;
+}
 P_Int operator*(unsigned int, const P_Int&);
 
 P_Int& P_Int::operator+=(const P_Int &rhs) {
-	int i, len = size();
+	size_t i, len = size();
 	for (i = 0; i < rhs.size() && i < len; ++i)
 		at(i) += rhs.at(i);
 	while (i < rhs.size()) push_back(rhs[i++]);
@@ -158,7 +165,9 @@ P_Int& P_Int::operator+=(const P_Int &rhs) {
 	return *this;
 }
 
-P_Int& P_Int::operator-=(const P_Int &rhs) {}
+P_Int& P_Int::operator-=(const P_Int &rhs) {
+	size_t i, len = size();
+}
 P_Int& P_Int::operator*=(const P_Int &rhs) {}
 
 /**
@@ -166,8 +175,9 @@ P_Int& P_Int::operator*=(const P_Int &rhs) {}
  */
 
 ostream& operator<<(ostream& os, const P_Int &rhs) {
-	for (int j = rhs.size() - 1; j >= 0; --j)
-		os << (int) rhs.at(j);
+	size_t len = rhs.size();
+	for (size_t j = 0; j < len; ++j)
+		os << (int) rhs.at(len - j - 1);
 	return os;
 }
 
@@ -175,13 +185,14 @@ istream& operator>>(istream& is, P_Int &rhs) {
 	rhs.resize(0); // clearing the vector
 	string tmp;
 	is >> tmp;
-	for (int j = tmp.size()-1; j >= 0; --j) {
-		if (!isdigit(tmp.at(j))) {
+	size_t len = tmp.size();
+	for (size_t j = 0; j < len; ++j) {
+		if (!isdigit(tmp.at(len - j - 1))) {
 			is.setstate(ios::failbit);
 			rhs.reset_();
 			return is;
 		}
-		rhs.push_back(tmp.at(j) - '0');
+		rhs.push_back(tmp.at(len - j - 1) - '0');
 	}
 	rhs.trimLeading0_();
 	return is;
@@ -202,7 +213,7 @@ void P_Int::trimLeading0_() {
 }
 
 void P_Int::carry_() {
-	int i;
+	size_t i;
 	for (i = 0; i < size() - 1; ++i) {
 		if (at(i) >= 10) {
 			at(i + 1) += at(i) / 10;
@@ -216,10 +227,10 @@ void P_Int::carry_() {
 }
 
 void P_Int::multiply_(char factor, unsigned int shift) {
-	int len = size();
+	size_t len = size();
 	resize(size() + shift);
-	for (int i = len - 1; i >= 0; --i)
-		at(i + shift) = at(i) * factor;
-	for (int i = 0; i < shift; ++i)
+	for (size_t i = 0; i < len; ++i)
+		at(len - i - 1 + shift) = at(len - i - 1) * factor;
+	for (size_t i = 0; i < shift; ++i)
 		at(i) = 0;
 }
