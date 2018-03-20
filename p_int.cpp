@@ -93,6 +93,58 @@ bool operator==(unsigned int lhs, const P_Int &rhs) { return rhs == lhs; }
 
 bool operator!=(unsigned int lhs, const P_Int &rhs) { return rhs != lhs; }
 
+
+/**
+ * Increment / decrement operators
+ */
+
+P_Int& P_Int::operator++() {
+	++at(0);
+	size_t i, len = size();
+	for (i = 0; i < len - 1; ++i) {
+		if (at(i) >= 10) {
+			at(i) = 0;
+			++at(i + 1);
+		}
+		else
+			break;
+	}
+	if (at(i) > 10) {
+		at(i) = 0;
+		push_back(1);
+	}
+	return *this;
+}
+
+P_Int P_Int::operator++(int) {
+	P_Int tmp(*this);
+	++(*this);
+	return tmp;
+}
+
+P_Int& P_Int::operator--() {
+	if (this->operator==(0))
+		throw NegativeExcept();
+	--at(0);
+	size_t i, len = size();
+	for (i = 0; i < len - 1; ++i) {
+		if (at(i) < 0) {
+			at(i) = 9;
+			--at(i + 1);
+		}
+		else
+			break;
+	}
+	trimLeading0_();
+	return *this;
+}
+
+P_Int P_Int::operator--(int) {
+	P_Int tmp(*this);
+	--(*this);
+	return tmp;
+}
+
 /**
  * Overloaded arithmetic operators
  */
@@ -130,6 +182,11 @@ P_Int P_Int::operator-(const P_Int &rhs) const {
 }
 
 P_Int P_Int::operator*(const P_Int &rhs) const {
+	if (this->operator==(0) || rhs == 0) return P_Int();
+	else if (this->operator==(1) || rhs == 1) {
+		P_Int result = *this + rhs - 1;
+		return result;
+	}
 	P_Int result;
 	result.resize(size() + rhs.size(), 0);
 	for (size_t i = 0; i < size(); ++i) {
@@ -154,7 +211,11 @@ P_Int operator-(unsigned int lhs, const P_Int &rhs) {
 	result -= rhs;
 	return result;
 }
-P_Int operator*(unsigned int, const P_Int&);
+P_Int operator*(unsigned int lhs, const P_Int &rhs){
+	P_Int result(lhs);
+	result *= rhs;
+	return result;
+}
 
 P_Int& P_Int::operator+=(const P_Int &rhs) {
 	size_t i, len = size();
@@ -166,9 +227,46 @@ P_Int& P_Int::operator+=(const P_Int &rhs) {
 }
 
 P_Int& P_Int::operator-=(const P_Int &rhs) {
+	if (this->operator<(rhs))
+		throw NegativeExcept();
 	size_t i, len = size();
+	for (i = 0; i < rhs.size(); ++i)
+		at(i) -= rhs.at(i);
+	for (i = 0; i < len - 1; ++i) {
+		if (at(i) < 0) {
+			--at(i + 1);
+			at(i) += 10;
+		}
+	}
+	trimLeading0_();
+	return *this;
 }
-P_Int& P_Int::operator*=(const P_Int &rhs) {}
+
+P_Int& P_Int::operator*=(const P_Int &rhs) {
+	if (this->operator==(0) || rhs == 0) {
+		*this = 0;
+		return *this;
+	}
+	else if (this->operator== (1)) {
+		*this = rhs;
+		return *this;
+	}
+	else if (rhs == 1) {
+		return *this;
+	}
+	P_Int result;
+	result.resize(size() + rhs.size(), 0);
+	for (size_t i = 0; i < size(); ++i) {
+		P_Int tmp(rhs);
+		tmp.multiply_(at(i), i);
+		result += tmp;
+	}
+	result.carry_();
+	result.trimLeading0_();
+	result.shrink_to_fit();
+	*this = result;
+	return *this;
+}
 
 /**
  * Friend functions for input and output streams
@@ -226,7 +324,7 @@ void P_Int::carry_() {
 	}
 }
 
-void P_Int::multiply_(char factor, unsigned int shift) {
+void P_Int::multiply_(char factor, size_t shift) {
 	size_t len = size();
 	resize(size() + shift);
 	for (size_t i = 0; i < len; ++i)

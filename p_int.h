@@ -12,6 +12,10 @@ public:
 	P_Int& operator=(const P_Int&);
 	friend std::ostream& operator<<(std::ostream&, const P_Int&);
 	friend std::istream& operator>>(std::istream&, P_Int&);
+	P_Int& operator++();
+	P_Int operator++(int);
+	P_Int& operator--();
+	P_Int operator--(int);
 	bool operator>(const P_Int&) const;
 	bool operator<(const P_Int&) const;
 	bool operator>=(const P_Int&) const;
@@ -41,12 +45,13 @@ public:
 	 * But += version of these are undefined as they may go overflowed
 	 */
 	int length() const;
+
 private:
 	void reset_();
 	void trimLeading0_();
 	void carry_();
 	// To multiply by a unit number and shift digits
-	void multiply_(char, unsigned int);
+	void multiply_(char, std::size_t);
 };
 
 #endif
