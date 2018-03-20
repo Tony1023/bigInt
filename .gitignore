@@ -5,6 +5,9 @@
 # Unignore all with extensions
 !*.*
 
+# Unignore makefile
+!makefile
+
 # Prerequisites
 *.d
 
