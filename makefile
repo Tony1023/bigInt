@@ -1,5 +1,5 @@
-CPPFLAGS = -Wall -std=c++11
-CXX = g++
+CPPFLAGS = -Weverything -std=c++11
+CXX = clang++
 BIN = bin
 run: test.cpp $(BIN)/p_int.o $(BIN)/negativeExcept.o
 	$(CXX) $(CPPFLAGS) $^ -o test
