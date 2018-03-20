@@ -1,4 +1,4 @@
-CPPFLAGS = -Weverything -std=c++11
+CPPFLAGS = -Wall -std=c++11
 CXX = clang++
 BIN = bin
 run: test.cpp $(BIN)/p_int.o $(BIN)/negativeExcept.o
