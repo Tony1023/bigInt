@@ -4,18 +4,18 @@
 #include <iostream>
 #include <cctype>
 #include <limits>
-using namespace std;
+
 
 /**
  * Public functions
  */
 
-P_Int::P_Int() :vector<char> ({0}) {};
+P_Int::P_Int() :std::vector<char> ({0}) {};
 
-P_Int::P_Int(const P_Int &i) :vector<char>(i) {};
+P_Int::P_Int(const P_Int &i) :std::vector<char>(i) {};
 
 P_Int::P_Int(unsigned int i) 
-	:vector<char>(0) {
+	:std::vector<char>(0) {
 	if (i == 0) {
 		push_back(0);
 		return;
@@ -27,7 +27,7 @@ P_Int::P_Int(unsigned int i)
 }
 
 P_Int& P_Int::operator=(const P_Int &rhs) {
-	vector<char>::operator=(rhs);
+	std::vector<char>::operator=(rhs);
 	return *this;
 }
 
@@ -273,21 +273,21 @@ P_Int& P_Int::operator*=(const P_Int &rhs) {
  * Friend functions for input and output streams
  */
 
-ostream& operator<<(ostream& os, const P_Int &rhs) {
+std::ostream& operator<<(std::ostream& os, const P_Int &rhs) {
 	size_t len = rhs.size();
 	for (size_t j = 0; j < len; ++j)
 		os << (int) rhs.at(len - j - 1);
 	return os;
 }
 
-istream& operator>>(istream& is, P_Int &rhs) {
+std::istream& operator>>(std::istream& is, P_Int &rhs) {
 	rhs.resize(0); // clearing the vector
-	string tmp;
+	std::string tmp;
 	is >> tmp;
 	size_t len = tmp.size();
 	for (size_t j = 0; j < len; ++j) {
 		if (!isdigit(tmp.at(len - j - 1))) {
-			is.setstate(ios::failbit);
+			is.setstate(std::ios::failbit);
 			rhs.reset_();
 			return is;
 		}
@@ -302,7 +302,7 @@ istream& operator>>(istream& is, P_Int &rhs) {
  * might throw an exception
  */
 unsigned int P_Int::unsigned_int() const {
-	if (this->operator>(numeric_limits<unsigned int>::max()))
+	if (this->operator>(std::numeric_limits<unsigned int>::max()))
 		throw "Overflowing"; // Perhaps a custom exception object would be better
 	unsigned int result = 0;
 	for (size_t i = 0; i < size(); ++i) {
