@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <cctype>
+#include <limits>
 using namespace std;
 
 /**
@@ -296,6 +297,20 @@ istream& operator>>(istream& is, P_Int &rhs) {
 	return is;
 }
 
+/**
+ * Returning an equal unsigned int
+ * might throw an exception
+ */
+unsigned int P_Int::unsigned_int() const {
+	if (this->operator>(numeric_limits<unsigned int>::max()))
+		throw "Overflowing"; // Perhaps a custom exception object would be better
+	unsigned int result = 0;
+	for (size_t i = 0; i < size(); ++i) {
+		result *= 10;
+		result += static_cast<unsigned>(at(i));
+	}
+	return result;
+}
 
 /**
  * Private helper methods
