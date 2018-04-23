@@ -2,9 +2,11 @@ CPPFLAGS = -Wall -std=c++11
 CXX = clang++
 BIN = bin
 
-run: test.cpp $(BIN)/bigInt.o $(BIN)/p_int.o $(BIN)/negativeExcept.o
-	$(CXX) $(CPPFLAGS) $^ -o test
+run: test
 	./test
+
+test: test.cpp $(BIN)/bigInt.o $(BIN)/p_int.o $(BIN)/negativeExcept.o
+	$(CXX) $(CPPFLAGS) $^ -o test
 
 $(BIN)/p_int.o: p_int.cpp p_int.h $(BIN)/.dirstamp
 	$(CXX) $(CPPFLAGS) -c $< -o $@

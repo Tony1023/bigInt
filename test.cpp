@@ -1,9 +1,11 @@
-#include "p_int.h"
+#include "bigInt.h"
 #include <iostream>
 using namespace std;
 
 int main() {
-	P_Int i(10012314);
-	P_Int j(44449999);
-	cout << (i * j) << endl;
+	BigInt i(-123);
+	BigInt j(330);
+	BigInt k(i);
+	cout << i << endl;
+	return 0;
 }

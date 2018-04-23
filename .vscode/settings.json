@@ -17,6 +17,7 @@
 		"stdexcept": "cpp",
 		"typeinfo": "cpp",
 		"__locale": "cpp",
-		"ostream": "cpp"
+		"ostream": "cpp",
+		"cstdlib": "cpp"
 	}
 }

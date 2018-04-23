@@ -4,7 +4,7 @@
 #include <vector>
 
 // Only positive large integers
-class P_Int: private std::vector<char> {
+class P_Int: protected std::vector<char> {
 public:
 	P_Int();
 	P_Int(const P_Int&);
