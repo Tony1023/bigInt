@@ -54,7 +54,7 @@ public:
 	 * e.g. 1000 += 100000000000 will cause int (1000) to overflow
 	 */
 
-	int length() const;
+	size_t length() const;
 
 	/**
 	 * Returning an equal unsigned int

@@ -1,4 +1,4 @@
-CPPFLAGS = -Wall -std=c++11
+CPPFLAGS = -Wall -std=c++11 -Wvla -Wshadow -Wunreachable-code -Wconversion
 CXX = clang++
 BIN = bin
 

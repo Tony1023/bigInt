@@ -31,7 +31,7 @@ P_Int& P_Int::operator=(const P_Int &rhs) {
 	return *this;
 }
 
-int P_Int::length() const {
+size_t P_Int::length() const {
 	return size();
 }
 
