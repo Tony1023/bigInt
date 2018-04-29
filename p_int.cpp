@@ -47,7 +47,7 @@ bool P_Int::operator>=(const P_Int &rhs) const {
 	for (size_t i = 0; i < len; ++i) {
 		if (at(len - i - 1) < rhs.at(len - i - 1))
 			return false;
-		else if (at(i) > rhs.at(len - i - 1))
+		else if (at(len - i - 1) > rhs.at(len - i - 1))
 			return true;
 	}
 	return true;
@@ -60,7 +60,7 @@ bool P_Int::operator<=(const P_Int &rhs) const {
 	for (size_t i = 0; i < len; ++i) {
 		if (at(len - i - 1) > rhs.at(len - i - 1))
 			return false;
-		else if (at(i) < rhs.at(len - i - 1))
+		else if (at(len - i - 1) < rhs.at(len - i - 1))
 			return true;
 	}
 	return true;
